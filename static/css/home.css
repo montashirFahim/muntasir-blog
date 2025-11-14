@@ -1,0 +1,66 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    text-align: center;
+    padding: 50px 10px;
+}
+
+.basic-home-content {
+    margin-bottom: 60px;
+}
+
+.home-content h1,
+.home-content h3 {
+    margin: 10px 0;
+}
+
+.home-content span {
+    color: #007BFF;
+}
+
+.social-media a {
+    margin: 0 10px;
+    font-size: 22px;
+    color: #007BFF;
+}
+
+.social-media a:hover {
+    color: #0056b3;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin: 10px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}

@@ -1,0 +1,70 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Blog Homepage</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="nav-left">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'blog_list' %}">Blog</a>
+            <a href="{% url 'category_list' %}">Categories</a>
+        </div>
+
+        <div class="nav-right">
+            {% if user.is_authenticated %}
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'notifications' %}">Notifications</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Signup</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Basic Home Section -->
+        <div class="basic-home-content">
+            <h1>Welcome to CS Blog!</h1>
+            <p>Discover interesting articles, write your own blogs, and join our community.</p>
+
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}" class="btn">Login</a>
+                <a href="{% url 'signup' %}" class="btn">Signup</a>
+            {% endif %}
+        </div>
+
+        <!-- Personal Info Section -->
+        <div class="home-content">
+            <h1>About Me</h1>
+            <h3>Hi, Myself</h3>
+            <h2>A. S. M. Montashir Fahim</h2>
+            <h3><span>I'm a Competetive Programmer & an aspiring Software Engineer</span></h3>
+            <h3><span>You can find me on</span></h3>
+
+            <div class="social-media">
+                <a href="https://www.facebook.com/badboy.montasir.9/" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="https://mail.google.com/mail/u/0/#inbox?compose=CllgCKCBBNQWjGMNlfhrSZNSSJPCgPglPcrNhFcgfxhCFJvtnPRkKvnHCqKfwkmGwvrVzqfwbmL" target="_blank"><i class="fas fa-inbox"></i></a>
+                <a href="https://www.linkedin.com/in/montashir-fahim/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                <a href="https://github.com/montashirFahim?tab=repositories" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://www.researchgate.net/profile/Muntasir-Fahim-2?ev=hdr_xprf" target="_blank"><i class="fab fa-researchgate"></i></a>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
