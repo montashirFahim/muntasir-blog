@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Login - CS Blog</title>
 
-    <!-- External CSS -->
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
@@ -14,12 +13,17 @@
 
         <h1>Login</h1>
 
+        <!-- Flash Message Box -->
+        {% if messages %}
+            <div class="message-box">
+                {% for message in messages %}
+                    <p class="message-text">{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
         <form method="POST">
             {% csrf_token %}
-
-            {% if form.non_field_errors %}
-                <div class="error-message">{{ form.non_field_errors }}</div>
-            {% endif %}
 
             <div class="form-group">
                 <label for="id_username">Username</label>

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.contrib.auth.views import LogoutView
 from . import views
 
 urlpatterns = [
@@ -12,5 +13,6 @@ urlpatterns = [
     path('write-blog/', views.BlogWrite, name='blog_write'),
     path('notifications/', views.Notifications, name='notifications'),
     path('pending-blogs/', views.PendingBlogs, name='pending_blogs'),
-    path('logout/', views.logout, name='logout'),
+    path('logout/', views.logout_view, name='logout'),
+    path('blog/<slug:slug>/', views.blog_detail, name='blog_detail'),
 ]

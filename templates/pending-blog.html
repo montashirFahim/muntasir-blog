@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pending Blogs</title>
+    <link rel="stylesheet" href="{% static 'css/pending-blog.css' %}">
+
+    <!-- MathJax for LaTeX rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    </script>
+</head>
+<body>
+
+<div class="navbar">
+    <div class="nav-left">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'blog_list' %}">Blog</a>
+    </div>
+    <div class="nav-right">
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <h1>Pending Blogs for Approval</h1>
+
+    {% if pending_blogs %}
+        <div class="blog-list">
+            {% for blog in pending_blogs %}
+            <div class="blog-card">
+                <h2>{{ blog.title }}</h2>
+                <p>By: {{ blog.author.username }}</p>
+                <p>Category: {{ blog.category }}</p>
+                <p>Submitted: {{ blog.created_at|date:"M d, Y H:i" }}</p>
+                <p>{{ blog.content|linebreaks|safe }}</p>
+
+                <!-- Approve / Reject Form -->
+                <form method="post" style="margin-top:10px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="blog_id" value="{{ blog.id }}">
+                    <button type="submit" name="action" value="approve" class="btn">Approve</button>
+                    <button type="submit" name="action" value="reject" class="btn btn-reject">Reject</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No pending blogs at the moment.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>

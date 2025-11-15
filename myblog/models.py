@@ -90,7 +90,7 @@ class Blog(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='blogs')
     title = models.CharField(max_length=100)
     slug = models.SlugField(unique=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, related_name='blogs')
+    category = models.CharField(max_length=100)
     views = models.IntegerField(default=0)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

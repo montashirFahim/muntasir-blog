@@ -1,0 +1,86 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+.navbar {
+    background: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.navbar a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    width: 85%;
+    margin: auto;
+    padding-top: 30px;
+}
+
+.title-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 180px;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.title-section h1 {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.action-buttons .btn {
+    margin: 0 8px;
+    padding: 10px 18px;
+    background: #007BFF;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+.action-buttons .btn:hover {
+    background: #0056b3;
+}
+
+.blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.blog-card {
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 10px;
+    background: #fafafa;
+}
+
+.blog-card h2 a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.blog-card h2 a:hover {
+    text-decoration: underline;
+}
+
+.pagination {
+    margin: 25px 0;
+    text-align: center;
+}
+
+.pagination .btn {
+    margin: 0 10px;
+}
