@@ -4,29 +4,49 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ blog.title }}</title>
+
     <link rel="stylesheet" href="{% static 'css/blogs.css' %}">
 
-    <!-- MathJax for LaTeX rendering -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-    <script id="MathJax-script" async
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+    <!-- LaTeX Rendering -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']]
+            },
+            svg: { fontCache: 'global' }
+        };
     </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
+
+
 <body>
+
 <div class="navbar">
     <div class="nav-left">
         <a href="{% url 'home' %}">Home</a>
         <a href="{% url 'blog_list' %}">Blog</a>
     </div>
     <div class="nav-right">
-        {% if user.is_authenticated %}
-            <a href="{% url 'profile' %}">Profile</a>
-            <a href="{% url 'logout' %}">Logout</a>
-        {% else %}
-            <a href="{% url 'login' %}">Login</a>
-            <a href="{% url 'signup' %}">Signup</a>
-        {% endif %}
-    </div>
+    {% if user.is_authenticated %}
+        <a href="{% url 'profile' %}">Profile</a>
+
+        <a href="{% url 'notifications' %}" class="notif-bell">
+            🔔
+            {% if unread_notifications > 0 %}
+                <span class="notif-count">{{ unread_notifications }}</span>
+            {% endif %}
+        </a>
+
+        <a href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'signup' %}">Signup</a>
+    {% endif %}
+</div>
+
 </div>
 
 <div class="container">
@@ -34,9 +54,70 @@
     <p>By: {{ blog.author.username }} | Category: {{ blog.category }} | Views: {{ blog.views }}</p>
     <p>Published: {{ blog.created_at|date:"M d, Y H:i" }}</p>
 
-    <div class="blog-content">
-        {{ blog.content|linebreaks|safe }}
-    </div>
+    <div class="blog-content">{{ blog.content|safe }}</div>
 </div>
+
+<hr>
+
+<h2>Comments</h2>
+
+<!-- MAIN COMMENT FORM -->
+{% if user.is_authenticated %}
+<form method="POST">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button type="submit" class="btn">Post Comment</button>
+</form>
+{% else %}
+<p><a href="{% url 'login' %}">Login</a> to comment.</p>
+{% endif %}
+
+<br>
+
+<!-- COMMENTS -->
+<div class="comment-section">
+
+{% for comment in comments %}
+    <div class="comment">
+        <strong>{{ comment.user.username }}</strong>
+        <p>{{ comment.content }}</p>
+        <small>{{ comment.created_at }}</small>
+
+        {% if user.is_authenticated %}
+        <a href="#" onclick="toggleReply({{ comment.id }}); return false;">Reply</a>
+        {% endif %}
+
+        <!-- REPLY FORM -->
+        <form method="POST" id="reply-{{ comment.id }}" style="display:none;" class="reply-form">
+            {% csrf_token %}
+            {{ reply_form.as_p }}
+            <input type="hidden" name="parent_id" value="{{ comment.id }}">
+            <button type="submit" class="btn small">Reply</button>
+        </form>
+
+        <!-- REPLIES -->
+        {% for reply in comment.children %}
+        <div class="reply">
+            <strong>{{ reply.user.username }}</strong>
+            <p>{{ reply.content }}</p>
+            <small>{{ reply.created_at }}</small>
+        </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+</div>
+
+<script>
+function toggleReply(id) {
+    let f = document.getElementById("reply-" + id);
+    f.style.display = (f.style.display === "none") ? "block" : "none";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    if (window.MathJax) MathJax.typesetPromise();
+});
+</script>
+
 </body>
 </html>

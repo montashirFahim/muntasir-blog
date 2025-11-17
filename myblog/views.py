@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from .models import *
+from .forms import *
 
 # Create your views here.
 def Home(request):
@@ -15,7 +16,6 @@ def signUp(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # Profile is automatically created via post_save signal
             return redirect("login")
     else:
         form = UserCreationForm()
@@ -39,26 +39,121 @@ def login(request):
 def blogs(request):
     all_blogs = Blog.objects.filter(is_approved=True).order_by('-views', '-created_at')
     
-    # Pagination: 10 blogs per page
     paginator = Paginator(all_blogs, 10)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
     return render(request, 'blogs.html', {'page_obj': page_obj})
 
+
 def blog_detail(request, slug):
-    blog = get_object_or_404(Blog, slug=slug, is_approved=True)
-    
+    blog = get_object_or_404(Blog, slug=slug)
+
+    # increment views
     blog.views += 1
-    blog.save(update_fields=['views'])
-    
-    return render(request, 'blog_detail.html', {'blog': blog})
+    blog.save()
 
-def Categories(requeust):
-    pass
+    comments = Comment.objects.filter(blog=blog, parent=None).order_by('-created_at')
 
-def Profile(request):
-    pass
+    if request.method == "POST":
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            parent_id = request.POST.get("parent_id")
+
+            new_comment = form.save(commit=False)
+            new_comment.user = request.user
+            new_comment.blog = blog
+
+            # handle reply
+            if parent_id:
+                parent_comment = Comment.objects.get(id=parent_id)
+                new_comment.parent = parent_comment
+
+            new_comment.save()
+
+            # Notify blog author when someone comments
+            if new_comment.parent is None:
+                if blog.author != request.user:
+                    Notification.objects.create(
+                        user=blog.author,
+                        message=f"{request.user.username} commented on your blog '{blog.title}'."
+                    )
+
+            # Notify comment owner when someone replies
+            else:
+                parent_comment = new_comment.parent
+                if parent_comment.user != request.user:
+                    Notification.objects.create(
+                        user=parent_comment.user,
+                        message=f"{request.user.username} replied to your comment on '{blog.title}'."
+                    )
+
+            return redirect('blog_detail', slug=blog.slug)
+
+    else:
+        form = CommentForm()
+
+    return render(request, "blog_detail.html", {
+    "blog": blog,
+    "comments": comments,
+    "comment_form": CommentForm(),
+    "reply_form": CommentForm(),
+    })
+
+
+def Categories(request):
+    # Fetch all approved blogs
+    blogs = Blog.objects.filter(is_approved=True)
+
+    # Create a mapping: category_name -> list of blogs
+    category_map = {}
+    for blog in blogs:
+        category_name = blog.category if blog.category else "Uncategorized"
+        if category_name not in category_map:
+            category_map[category_name] = []
+        category_map[category_name].append(blog)  # append the whole blog object
+
+    return render(request, "categories.html", {"category_map": category_map})
+
+
+
+@login_required
+def profile(request):
+    profile, created = Profile.objects.get_or_create(user=request.user)
+
+    # Update profile if form submitted
+    if request.method == "POST":
+        bio = request.POST.get("bio")
+        avatar = request.FILES.get("avatar")
+
+        profile.bio = bio
+        if avatar:
+            profile.avatar = avatar
+        profile.save()
+        messages.success(request, "Profile updated successfully.")
+        return redirect("profile")
+
+    # Fetch user's blogs
+    user_blogs = Blog.objects.filter(author=request.user).order_by('-created_at')
+    paginator = Paginator(user_blogs, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "profile.html", {
+        "profile": profile,
+        "page_obj": page_obj,
+    })
+
+
+@login_required
+def DeleteBlog(request, blog_id):
+    blog = get_object_or_404(Blog, id=blog_id, author=request.user)
+    if request.method == "POST":
+        blog.delete()
+        messages.success(request, "Blog deleted successfully.")
+        return redirect("profile")
+    return render(request, "confirm_delete.html", {"blog": blog})
+
 
 @login_required
 def BlogWrite(request):
@@ -70,7 +165,7 @@ def BlogWrite(request):
 
     if request.method == "POST":
         title = request.POST.get("title")
-        category = request.POST.get("category")   # now a string
+        category = request.POST.get("category")  
         content = request.POST.get("content")
 
         if blog:
@@ -79,12 +174,13 @@ def BlogWrite(request):
             blog.content = content
             blog.is_approved = False
             blog.save()
+
             messages.success(request, "Blog updated and moved to pending review.")
         else:
             Blog.objects.create(
                 author=request.user,
                 title=title,
-                category=category,   # stored as string
+                category=category,
                 content=content,
                 is_approved=False,
             )
@@ -96,9 +192,18 @@ def BlogWrite(request):
         "blog": blog,
     })
 
-
+@login_required
 def Notifications(request):
-    pass
+    notifications = Notification.objects.filter(user=request.user).order_by('-created_at')
+
+    # Mark all unread as read
+    notifications.filter(is_read=False).update(is_read=True)
+
+    return render(request, "notifications.html", {
+        "notifications": notifications
+    })
+
+
 
 
 @login_required
@@ -114,12 +219,16 @@ def PendingBlogs(request):
         if action == "approve":
             blog.is_approved = True
             blog.save()
-            # Notify author
             Notification.objects.create(user=blog.author, message=f"Your blog '{blog.title}' has been approved.")
             messages.success(request, f"Blog '{blog.title}' approved.")
         elif action == "reject":
+            Notification.objects.create(
+                user=blog.author,
+                message=f"Your blog '{blog.title}' has been rejected."
+                )
             blog.delete()
             messages.success(request, f"Blog '{blog.title}' rejected and removed.")
+
 
         return redirect("pending_blogs")
 

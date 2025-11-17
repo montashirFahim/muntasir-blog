@@ -1,0 +1,124 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    width: 85%;
+    margin: auto;
+    padding: 30px 0;
+}
+
+/* Profile Info */
+.profile-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.avatar img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.details h2 {
+    margin: 0 0 10px 0;
+}
+
+.details textarea {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* User Blogs */
+.user-blogs h2 {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.blog-card {
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: #fafafa;
+}
+
+.blog-card h3 {
+    margin: 0;
+}
+
+.blog-card a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+.blog-card a:hover {
+    text-decoration: underline;
+}
+
+.blog-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.inline-form {
+    display: inline;
+}
+
+.btn {
+    padding: 8px 15px;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn.small {
+    padding: 5px 10px;
+    font-size: 13px;
+    color: white;
+}
+
+.btn.delete-btn {
+    background-color: #FF4C4C;
+}
+
+.btn.delete-btn:hover {
+    background-color: #c73838;
+}
+
+.pagination {
+    margin-top: 20px;
+    text-align: center;
+}

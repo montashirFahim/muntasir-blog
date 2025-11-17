@@ -37,3 +37,23 @@ input, textarea, select {
     min-height: 200px;
     margin-top: 10px;
 }
+
+/* Notification Bell */
+.nav-right .notif-bell {
+    position: relative;
+    margin-right: 15px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.notif-count {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}

@@ -123,9 +123,20 @@ class Comment(models.Model):
     content = models.TextField()
     is_approved = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey(
+        'self',
+        null=True,
+        blank=True,
+        related_name="replies",
+        on_delete=models.CASCADE
+    )
 
     class Meta:
         ordering = ['created_at']
 
     def __str__(self):
         return f"Comment by {self.user.username} on {self.blog.title}"
+    
+    @property
+    def children(self):
+        return self.replies.all()

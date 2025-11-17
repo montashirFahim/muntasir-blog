@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #333;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    text-align: center;
+    padding: 50px 10px;
+}
+
+/* Categories */
+.category-block {
+    margin-bottom: 40px;
+}
+
+.category-name {
+    color: black;
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+.blog-list {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.blog-list li {
+    margin-bottom: 10px;
+}
+
+.blog-link {
+    color: #007BFF;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.blog-link:hover {
+    text-decoration: underline;
+}
+
+/* Notification Bell */
+.nav-right .notif-bell {
+    position: relative;
+    margin-right: 15px;
+    font-size: 20px;
+    text-decoration: none;
+}
+
+.notif-count {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: red;
+    color: white;
+    font-size: 11px;
+    padding: 2px 6px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
